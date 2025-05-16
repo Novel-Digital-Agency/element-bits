@@ -175,66 +175,44 @@ final class Element_Bits {
      * Load required dependencies.
      */
     private function load_dependencies() {
-        // Register widget assets
-        add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_widget_assets' ] );
+        include_once ELEBITS_PATH . 'inc/functions.php';    
         
         // Register Elementor category
         add_action( 'elementor/elements/categories_registered', [ $this, 'register_widget_categories' ] );
+        
+        // Register Google Maps API if key exists
+        add_action( 'wp_enqueue_scripts', [ $this, 'register_external_scripts' ] );
     }
     
     /**
-     * Register widget assets (scripts and styles).
+     * Register external scripts like Google Maps API.
      */
-    public function register_widget_assets() {
-        // Widgets directory
-        $widgets_dir = ELEBITS_PATH . 'widgets/';
+    public function register_external_scripts() {
+        // Get Google Maps API Key
+        $gmap_api_key = get_option( 'element_bits_gmap_key', '' );
+        $active_modules = self::get_active_modules();
         
-        // Check if the directory exists
-        if ( ! file_exists( $widgets_dir ) ) {
-            return;
+        // Register Google Maps API if key exists
+        if ( !empty( $gmap_api_key  ) && $gmap_api_key != '' && in_array( 'eb-google-map', $active_modules ) ) {
+            $maps_params['key'] = $gmap_api_key;
+            $maps_params['libraries'] = 'marker';
+
+            $google_maps_lib_url = add_query_arg(
+                $maps_params,
+                'https://maps.googleapis.com/maps/api/js'
+            );
+            wp_register_script(
+                'eb-google-maps-lib',
+                $google_maps_lib_url,
+                [],
+                wp_rand(),
+                true
+            );
         }
-        
-        // Get all widget directories
-        $widgets = glob( $widgets_dir . '*', GLOB_ONLYDIR );
-        
-        foreach ( $widgets as $widget_dir ) {
-            $widget_name = basename( $widget_dir );
-            $module_file = $widget_dir . '/module.php';
-            
-            // Check if module file exists
-            if ( file_exists( $module_file ) ) {
-                $module = include $module_file;
-                
-                if ( ! empty( $module['script_handles'] ) ) {
-                    foreach ( $module['script_handles'] as $handle ) {
-                        $js_file = ELEBITS_URL . 'widgets/' . $widget_name . '/widget.js';
-                        if ( file_exists( ELEBITS_PATH . 'widgets/' . $widget_name . '/widget.js' ) ) {
-                            wp_register_script(
-                                $handle,
-                                $js_file,
-                                [ 'jquery', 'elementor-frontend' ],
-                                ELEBITS_VERSION,
-                                true
-                            );
-                        }
-                    }
-                }
-                
-                if ( ! empty( $module['style_handles'] ) ) {
-                    foreach ( $module['style_handles'] as $handle ) {
-                        $css_file = ELEBITS_URL . 'widgets/' . $widget_name . '/widget.css';
-                        if ( file_exists( ELEBITS_PATH . 'widgets/' . $widget_name . '/widget.css' ) ) {
-                            wp_register_style(
-                                $handle,
-                                $css_file,
-                                [],
-                                ELEBITS_VERSION
-                            );
-                        }
-                    }
-                }
-            }
-        }
+    }
+
+    public static function get_active_modules() {
+        return get_option( 'element_bits_active_modules', [] );
     }
     
     /**
@@ -258,33 +236,37 @@ final class Element_Bits {
      * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
      */
     public function register_widgets( $widgets_manager ) {
-        // Widgets directory
-        $widgets_dir = ELEBITS_PATH . 'widgets/';
+        $modules = elebits_get_modules();
+        $active_modules = self::get_active_modules();
         
-        // Check if the directory exists
-        if ( ! file_exists( $widgets_dir ) ) {
-            return;
-        }
-        
-        // Get all widget directories
-        $widgets = glob( $widgets_dir . '*', GLOB_ONLYDIR );
-        
-        foreach ( $widgets as $widget_dir ) {
-            $widget_file = $widget_dir . '/widget.php';
-            
-            // Include widget file if it exists
-            if ( file_exists( $widget_file ) ) {
-                require_once $widget_file;
-                
-                // Get the widget class name from the filename
-                $widget_name = basename( $widget_dir );
-                $class_name = '\Element_Bits\Widgets\EB_' . str_replace('-', '_', ucfirst( $widget_name ) );
-                
-                // Register the widget if the class exists
-                if ( class_exists( $class_name ) ) {
-                    $widgets_manager->register( new $class_name() );
-                }
+        foreach ( $modules as $module_name => $module ) {
+            // Skip hidden modules or inactive modules
+            if ( $module['hidden'] || !in_array($module_name, $active_modules, true) ) {
+                continue;
             }
+
+            // Register common assets if needed
+            if ( $module['style_url'] ) {
+                wp_register_style(
+                    sanitize_title($module['name']),
+                    $module['style_url'],
+                    ['elementor-frontend'],
+                    wp_rand()
+                );
+            }
+
+            if ( $module['script_url'] ) {
+                wp_register_script(
+                    sanitize_title($module['name']),
+                    $module['script_url'],
+                    ['jquery', 'elementor-frontend'],
+                    wp_rand(),
+                    true
+                );
+            }
+
+            require_once $module['widget_file_path'];
+            $widgets_manager->register( new $module['class_name']() );
         }
     }
 

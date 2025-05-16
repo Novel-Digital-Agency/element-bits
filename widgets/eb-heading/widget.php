@@ -77,6 +77,34 @@ class EB_Heading extends Widget_Base {
 	}
 
 	/**
+	 * Get style dependencies.
+	 *
+	 * Retrieve the list of style dependencies the widget requires.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @return array Widget style dependencies.
+	 */
+	public function get_style_depends() {
+		return [ 'eb-heading' ];
+	}
+
+	/**
+	 * Get script dependencies.
+	 *
+	 * Retrieve the list of script dependencies the widget requires.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @return array Widget script dependencies.
+	 */
+	public function get_script_depends() {
+		return [ 'eb-heading' ];
+	}
+
+	/**
 	 * Register widget controls.
 	 *
 	 * @since 1.0.0
@@ -169,6 +197,23 @@ class EB_Heading extends Widget_Base {
 				'default'     => '',
 				'label_block' => true,
 				'description' => esc_html__( 'Enter the word or phrase you want to highlight', 'element-bits' ),
+			]
+		);
+
+		///--------------------------------------
+		$repeater->add_control(
+			'display_mode',
+			[
+				'label'   => esc_html__( 'Display Mode', 'element-bits' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'inline',
+				'options' => [
+					'inline'       => esc_html__( 'Inline with others', 'element-bits' ),
+					'block' => esc_html__( 'On its own line', 'element-bits' ),
+				],
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}}' => 'display: {{VALUE}}; width: fit-content;',
+				],
 			]
 		);
 
@@ -371,7 +416,8 @@ class EB_Heading extends Widget_Base {
 				}
 
 				$highlighted_text = preg_quote($item['highlighted_text'], '/');
-				$replacement      = '<span class="elementor-repeater-item-' . esc_attr( $item['_id'] ) . ' eb-highlighted-text">$0</span>';
+				$new_line_class = isset($item['display_mode']) && 'inline-block' === $item['display_mode'] ? ' eb-highlighted-text-new-line' : '';
+				$replacement      = '<span class="elementor-repeater-item-' . esc_attr( $item['_id'] ) . ' eb-highlighted-text' . $new_line_class . '">$0</span>';
 				$title            = preg_replace( '/' . $highlighted_text . '/', $replacement, $title );
 			}
 		}
@@ -411,7 +457,8 @@ class EB_Heading extends Widget_Base {
 				} 
 				
 				var highlightedText = item.highlighted_text;
-				var replacement = '<span class="elementor-repeater-item-' + item._id + ' eb-highlighted-text">' + highlightedText + '</span>';
+				var newLineClass = item.display_mode === 'inline-block' ? ' eb-highlighted-text-new-line' : '';
+				var replacement = '<span class="elementor-repeater-item-' + item._id + ' eb-highlighted-text' + newLineClass + '">' + highlightedText + '</span>';
 				
 				// Simple string replacement
 				title = title.split(highlightedText).join(replacement);
