@@ -209,6 +209,19 @@ final class Element_Bits {
                 true
             );
         }
+
+        if ( 1==1 ) {
+            wp_register_script(
+                'alpinejs',
+                'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
+                [],
+                wp_rand(),
+                [
+                    'strategy'  => 'defer',
+                    'in_footer' => false,
+                ]
+            );
+        }
     }
 
     public static function get_active_modules() {

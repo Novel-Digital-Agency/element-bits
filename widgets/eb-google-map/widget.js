@@ -1,5 +1,4 @@
 ;(function($) {
-  console.log(11);
   var widget = function($scope, $) {
     var wrapper = $scope.find('.eb-widget-wrapper');
     var data = wrapper.data('elebits');
