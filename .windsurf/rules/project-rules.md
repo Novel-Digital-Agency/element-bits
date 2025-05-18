@@ -2,6 +2,10 @@
 trigger: always_on
 ---
 
+---
+trigger: always_on
+---
+
 # Contributing to Element Bits
 
 This document outlines the coding standards and guidelines for contributing to the Element Bits plugin.
