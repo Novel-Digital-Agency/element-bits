@@ -29,7 +29,7 @@ function elebits_get_modules() {
             'title'            => esc_html__( 'EB: Swiper Arrow', 'element-bits' ),
             'icon'             => 'eicon-arrow-circle',
             'script_url'       => ELEBITS_URL . 'widgets/eb-swiper-arrow/widget.js',
-            'style_url'        => false,
+            'style_url'        => ELEBITS_URL . 'widgets/eb-swiper-arrow/widget.css',
             'hidden'           => false,
             'widget_file_path' => ELEBITS_PATH . 'widgets/eb-swiper-arrow/widget.php',  
             'class_name'       => '\Element_Bits\Widgets\EB_Swiper_Arrow'

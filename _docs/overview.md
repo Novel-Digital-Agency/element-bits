@@ -17,10 +17,12 @@ element-bits/
 │   ├── class-settings.php
 │   └── functions.php
 ├── widgets/              # Each widget lives in its own sub-folder
-│   ├── eb-button/
-│   │   └── widget.php
 │   ├── eb-google-map/
 │   │   ├── map-styles.php
+│   │   ├── widget.js
+│   │   └── widget.php
+│   ├── eb-swiper-arrow/
+│   │   ├── widget.css
 │   │   ├── widget.js
 │   │   └── widget.php
 │   └── eb-heading/
@@ -58,16 +60,8 @@ When you add a new widget, **add its entry here** and the rest of the system (au
 | Folder            | Class                                   | Notes |
 |-------------------|-----------------------------------------|-------|
 | `eb-heading`      | `\Element_Bits\Widgets\EB_Heading`     | Advanced heading with highlighted words. |
-| `eb-button`       | `\Element_Bits\Widgets\EB_Button`*     | Customisable button (basic skeleton). |
 | `eb-google-map`   | `\Element_Bits\Widgets\EB_Google_Map` | Google Maps widget with style presets & lazy JS loader. |
-
-\* *Currently only the PHP widget stub exists – extend as needed.*
-
-Each widget folder should contain at minimum:
-* `widget.php`  – server-side Elementor widget class.
-* `widget.js`   – optional frontend behaviour (registered via `script_url`).
-* `widget.css`  – optional styles (registered via `style_url`).
-* Extra helper files (e.g. `map-styles.php`) live alongside.
+| `eb-swiper-arrow` | `\Element_Bits\Widgets\EB_Swiper_Arrow` | Navigation arrow for Swiper sliders. |
 
 ## Settings & asset loading flow
 1. Admin toggles widgets in the settings screen (`class-settings.php`).

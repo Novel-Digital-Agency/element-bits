@@ -43,6 +43,15 @@ class EB_Swiper_Arrow extends Widget_Base {
     public function get_script_depends() {
         return ['eb-swiper-arrow'];
     }
+    
+    /**
+     * Get style dependencies.
+     *
+     * @return array Style dependencies.
+     */
+    public function get_style_depends() {
+        return ['eb-swiper-arrow'];
+    }
 
     /**
      * Get widget icon.
@@ -134,6 +143,20 @@ class EB_Swiper_Arrow extends Widget_Base {
                 'frontend_available' => true,
             ]
         );
+        
+        // Go to specific slide
+        $this->add_control(
+            'go_to_slide',
+            [
+                'label' => esc_html__( 'Go to specific slide', 'element-bits' ),
+                'type' => Controls_Manager::NUMBER,
+                'min' => 0,
+                'step' => 1,
+                'default' => 0,
+                'description' => esc_html__( 'Enter slide index. Set to 0 to disable.', 'element-bits' ),
+                'frontend_available' => true,
+            ]
+        );
 
         // Arrow Type
         $this->add_control(
@@ -172,7 +195,7 @@ class EB_Swiper_Arrow extends Widget_Base {
         $this->add_control(
             'custom_media_heading',
             [
-                'label' => esc_html__( 'Custom Media', 'element-bits' ),
+                'label' => esc_html__( 'Custom Icon', 'element-bits' ),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -181,7 +204,7 @@ class EB_Swiper_Arrow extends Widget_Base {
         $this->add_control(
             'use_custom_media',
             [
-                'label' => esc_html__( 'Override Default Icons', 'element-bits' ),
+                'label' => esc_html__( 'Override Default Icon', 'element-bits' ),
                 'type' => Controls_Manager::SWITCHER,
                 'label_on' => esc_html__( 'Yes', 'element-bits' ),
                 'label_off' => esc_html__( 'No', 'element-bits' ),
@@ -464,46 +487,6 @@ class EB_Swiper_Arrow extends Widget_Base {
             $is_svg = strtolower($file_ext) === 'svg';
         }
         ?>
-        <style>
-            .eb-swiper-arrow-wrapper {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .eb-swiper-arrow {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                background: none;
-                border: none;
-                padding: 0;
-                margin: 0;
-                transition: all 0.3s ease;
-                line-height: 1;
-                color: #333;
-            }
-            
-            .eb-swiper-arrow-svg {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-            }
-            
-            .eb-swiper-arrow img {
-                display: block;
-                max-width: 100%;
-                height: auto;
-                transition: all 0.3s ease;
-            }
-            
-            .eb-swiper-arrow svg {
-                width: 100%;
-                height: 100%;
-            }
-        </style>
         
         <div 
             class="eb-swiper-arrow-wrapper" 
@@ -511,13 +494,14 @@ class EB_Swiper_Arrow extends Widget_Base {
             data-swiper-container="<?php echo esc_attr($swiper_container_id); ?>"
         >
             <button 
-                data-elebits-swiper-arrow='<?php echo json_encode([
-                    'direction' => $arrow_direction,
-                    'swiper_id' => $swiper_container_id,
-                ]); ?>'
-                class="<?php echo esc_attr($arrow_class); ?>" 
-                aria-label="<?php echo $aria_label; ?>"
-            >
+            data-elebits-swiper-arrow='<?php echo json_encode([
+                'direction' => $arrow_direction,
+                'swiper_id' => $swiper_container_id,
+                'go_to_slide' => isset($settings['go_to_slide']) ? intval($settings['go_to_slide']) : 0,
+            ]); ?>'
+            class="<?php echo esc_attr($arrow_class); ?>" 
+            aria-label="<?php echo $aria_label; ?>"
+        >
                 <?php if (!empty($custom_media_url)) : ?>
                     <?php if ($is_svg && function_exists('wp_get_attachment_image')) : ?>
                         <?php 
