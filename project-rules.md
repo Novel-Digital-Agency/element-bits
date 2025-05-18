@@ -23,8 +23,8 @@ This document outlines the coding standards and guidelines for contributing to t
 `wp-contnet/plugins/element-bits`
 
 Each widget should live in its own folder with the following structure:
-- `widget.css` - Widget-specific styles
-- `widget.js` - Widget-specific scripts
+- `widget.css` - Widget-specific styles. Optional, not all widget need this.
+- `widget.js` - Widget-specific scripts. Optional, not all widget need this.
 - `widget.php` - Widget class implementation
 
 ## Coding Standards

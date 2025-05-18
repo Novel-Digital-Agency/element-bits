@@ -74,6 +74,11 @@ final class Element_Bits {
             require_once ELEBITS_PATH . 'inc/class-settings.php';
             $this->settings = Elebits_Settings::instance();
         }
+        
+        // Include carousel module
+        if ( in_array( 'eb-carousel', self::get_active_modules() ) ) {
+            require_once ELEBITS_PATH . 'widgets/eb-carousel/module.php';
+        }
     }
 
     /**
@@ -188,19 +193,37 @@ final class Element_Bits {
      * Register external scripts like Google Maps API.
      */
     public function register_external_scripts() {
-        // Get Google Maps API Key
-        $gmap_api_key = get_option( 'element_bits_gmap_key', '' );
+        // Get active modules
         $active_modules = self::get_active_modules();
         
-        // Register Google Maps API if key exists
-        if ( !empty( $gmap_api_key  ) && $gmap_api_key != '' && in_array( 'eb-google-map', $active_modules ) ) {
+        // Register Swiper for Carousel
+        if ( in_array( 'eb-carousel', $active_modules ) ) {
+            // Swiper CSS
+            wp_register_style(
+                'swiper',
+                'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css',
+                [],
+                '8.4.7'
+            );
+            
+            // Swiper JS
+            wp_register_script(
+                'swiper',
+                'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js',
+                [ 'jquery' ],
+                '8.4.7',
+                true
+            );
+        }
+        
+        // Register Google Maps API if key exists and module is active
+        $gmap_api_key = get_option( 'element_bits_gmap_key', '' );
+        if ( !empty( $gmap_api_key ) && in_array( 'eb-google-map', $active_modules ) ) {
             $maps_params['key'] = $gmap_api_key;
             $maps_params['libraries'] = 'marker';
 
-            $google_maps_lib_url = add_query_arg(
-                $maps_params,
-                'https://maps.googleapis.com/maps/api/js'
-            );
+            $google_maps_lib_url = add_query_arg( $maps_params, 'https://maps.googleapis.com/maps/api/js' );
+            
             wp_register_script(
                 'eb-google-maps-lib',
                 $google_maps_lib_url,
@@ -210,6 +233,7 @@ final class Element_Bits {
             );
         }
 
+        // Register Alpine.js if needed
         if ( 1==1 ) {
             wp_register_script(
                 'alpinejs',
@@ -258,7 +282,35 @@ final class Element_Bits {
                 continue;
             }
 
-            // Register common assets if needed
+            // Handle carousel widget dependencies
+            if ( 'eb-carousel' === $module_name ) {
+                // Enqueue Swiper CSS
+                wp_enqueue_style('swiper');
+                
+                // Register and enqueue carousel script with Swiper as dependency
+                wp_register_script(
+                    sanitize_title($module['name']),
+                    $module['script_url'],
+                    ['jquery', 'elementor-frontend', 'swiper'],
+                    wp_rand(),
+                    true
+                );
+                
+                // Register and enqueue carousel styles
+                wp_register_style(
+                    sanitize_title($module['name']),
+                    $module['style_url'],
+                    ['swiper'],
+                    wp_rand()
+                );
+                
+                wp_enqueue_style(sanitize_title($module['name']));
+                wp_enqueue_script(sanitize_title($module['name']));
+                
+                continue;
+            }
+            
+            // Register common assets for other widgets
             if ( $module['style_url'] ) {
                 wp_register_style(
                     sanitize_title($module['name']),
