@@ -33,6 +33,6 @@ function elebits_get_modules() {
             'hidden'           => false,
             'widget_file_path' => ELEBITS_PATH . 'widgets/eb-swiper-arrow/widget.php',  
             'class_name'       => '\Element_Bits\Widgets\EB_Swiper_Arrow'
-        ]
+        ],
     ];
 }

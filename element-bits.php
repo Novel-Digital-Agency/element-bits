@@ -196,26 +196,6 @@ final class Element_Bits {
         // Get active modules
         $active_modules = self::get_active_modules();
         
-        // Register Swiper for Carousel
-        if ( in_array( 'eb-carousel', $active_modules ) ) {
-            // Swiper CSS
-            wp_register_style(
-                'swiper',
-                'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css',
-                [],
-                '8.4.7'
-            );
-            
-            // Swiper JS
-            wp_register_script(
-                'swiper',
-                'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js',
-                [ 'jquery' ],
-                '8.4.7',
-                true
-            );
-        }
-        
         // Register Google Maps API if key exists and module is active
         $gmap_api_key = get_option( 'element_bits_gmap_key', '' );
         if ( !empty( $gmap_api_key ) && in_array( 'eb-google-map', $active_modules ) ) {
@@ -279,34 +259,6 @@ final class Element_Bits {
         foreach ( $modules as $module_name => $module ) {
             // Skip hidden modules or inactive modules
             if ( $module['hidden'] || !in_array($module_name, $active_modules, true) ) {
-                continue;
-            }
-
-            // Handle carousel widget dependencies
-            if ( 'eb-carousel' === $module_name ) {
-                // Enqueue Swiper CSS
-                wp_enqueue_style('swiper');
-                
-                // Register and enqueue carousel script with Swiper as dependency
-                wp_register_script(
-                    sanitize_title($module['name']),
-                    $module['script_url'],
-                    ['jquery', 'elementor-frontend', 'swiper'],
-                    wp_rand(),
-                    true
-                );
-                
-                // Register and enqueue carousel styles
-                wp_register_style(
-                    sanitize_title($module['name']),
-                    $module['style_url'],
-                    ['swiper'],
-                    wp_rand()
-                );
-                
-                wp_enqueue_style(sanitize_title($module['name']));
-                wp_enqueue_script(sanitize_title($module['name']));
-                
                 continue;
             }
             
