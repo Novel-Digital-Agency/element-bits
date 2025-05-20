@@ -1,41 +1,40 @@
 # Element Bits
 
-Custom Elementor widgets and extensions for WordPress.
+Lightweight collection of custom Elementor widgets for WordPress.
 
 ## Description
 
-Element Bits is a WordPress plugin that adds custom widgets to Elementor page builder. These widgets are designed to enhance your website building experience with Elementor.
+Element Bits extends the Elementor page builder with a hand-picked set of extra widgets focused on performance and ease of use.
 
-## Features
+## Widgets Included
 
-- **EB: Heading** - Advanced heading widget with highlighted words feature
-- More widgets coming soon!
+| Widget | Description |
+| ------ | ----------- |
+| **EB Heading** | Flexible heading with optional sub-text, divider and word highlighting. |
+| **EB Google Map** | Easily embed Google Maps with custom markers and styling, using your own API key. |
+| **EB Swiper Arrow** | Stand-alone previous / next arrows that can control any Swiper-based slider. |
 
 ## Requirements
 
-- WordPress 5.6 or later
-- PHP 7.4 or later
-- Elementor 3.0.0 or later
+- WordPress 6.5 or later  
+- PHP 7.4 or later  
+- Elementor 3.0 or later
 
 ## Installation
 
-1. Upload the `element-bits` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Use the widgets in Elementor editor
+1. Upload the `element-bits` folder to the `/wp-content/plugins/` directory **or** install via **Plugins → Add New** in WordPress.  
+2. Activate the plugin through the **Plugins** screen.  
+3. Navigate to **Element Bits → Settings** to enable the widgets you need.  
 
-## Widgets
+## Usage
 
-### EB: Heading
+Open the Elementor editor and search for the **Element Bits** category. Drag any of the available widgets onto the canvas and adjust their settings.
 
-An advanced heading widget that allows you to:
-- Add a heading with custom typography
-- Highlight specific words with custom styles
-- Apply different colors, typography, and backgrounds to highlighted words
-- Add hover effects to highlighted words
+## Changelog
 
-## Development
+### 1.0.0
 
-This plugin is actively being developed. More widgets and features will be added in future updates.
+Initial release with Heading, Google Map and Swiper Arrow widgets.
 
 ## Author
 
