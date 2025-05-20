@@ -176,31 +176,7 @@ class EB_Swiper_Arrow extends Widget_Base {
             ]
         );
 
-        // Arrow Custom Image
-        $this->add_control(
-            'arrow_image',
-            [
-                'label' => esc_html__( 'Choose Arrow Image', 'element-bits' ),
-                'type' => Controls_Manager::MEDIA,
-                'default' => [
-                    'url' => Utils::get_placeholder_image_src(),
-                ],
-                'condition' => [
-                    'arrow_type' => 'custom',
-                ],
-            ]
-        );
-        
         // Custom Media Upload (Overrides default icons)
-        $this->add_control(
-            'custom_media_heading',
-            [
-                'label' => esc_html__( 'Custom Icon', 'element-bits' ),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-        
         $this->add_control(
             'use_custom_media',
             [
@@ -471,12 +447,12 @@ class EB_Swiper_Arrow extends Widget_Base {
         }
         
         // Get hover animation class
-        $hover_animation = !empty($settings['hover_animation']) ? ' elementor-animation-' . $settings['hover_animation'] : '';
+        $hover_animation = !empty($settings['hover_animation']) ? ' elementor-animation-' . esc_attr($settings['hover_animation']) : '';
         $swiper_container_id = !empty($settings['swiper_container_id']) ? $settings['swiper_container_id'] : '';
         
         // Set aria label and CSS class based on direction
         $aria_label = $arrow_direction === 'prev' ? esc_attr__('Previous', 'element-bits') : esc_attr__('Next', 'element-bits');
-        $arrow_class = 'eb-swiper-arrow eb-swiper-' . $arrow_direction . $hover_animation;
+        $arrow_class = 'eb-swiper-arrow eb-swiper-' . esc_attr($arrow_direction) . $hover_animation;
         
         // Determine if we're using SVG or image
         $is_svg = false;
@@ -494,14 +470,14 @@ class EB_Swiper_Arrow extends Widget_Base {
             data-swiper-container="<?php echo esc_attr($swiper_container_id); ?>"
         >
             <button 
-            data-elebits-swiper-arrow='<?php echo json_encode([
-                'direction' => $arrow_direction,
-                'swiper_id' => $swiper_container_id,
-                'go_to_slide' => isset($settings['go_to_slide']) ? intval($settings['go_to_slide']) : 0,
-            ]); ?>'
-            class="<?php echo esc_attr($arrow_class); ?>" 
-            aria-label="<?php echo $aria_label; ?>"
-        >
+                data-elebits-swiper-arrow='<?php echo esc_attr(wp_json_encode([
+                    'direction' => $arrow_direction,
+                    'swiper_id' => $swiper_container_id,
+                    'go_to_slide' => isset($settings['go_to_slide']) ? intval($settings['go_to_slide']) : 0,
+                ])); ?>'
+                class="<?php echo esc_attr($arrow_class); ?>" 
+                aria-label="<?php echo esc_attr($aria_label); ?>"
+            >
                 <?php if (!empty($custom_media_url)) : ?>
                     <?php if ($is_svg && function_exists('wp_get_attachment_image')) : ?>
                         <?php 
@@ -509,16 +485,16 @@ class EB_Swiper_Arrow extends Widget_Base {
                         $attachment_id = attachment_url_to_postid($custom_media_url);
                         if ($attachment_id) :
                             // Use WordPress function to get SVG content safely
-                            echo wp_get_attachment_image($attachment_id, 'full', false, array('class' => 'eb-svg-icon', 'alt' => $aria_label));
+                            echo wp_get_attachment_image($attachment_id, 'full', false, array('class' => 'eb-svg-icon', 'alt' => esc_attr($aria_label)));
                         else: 
                         ?>
-                            <img src="<?php echo esc_url($custom_media_url); ?>" alt="<?php echo $aria_label; ?>">
+                            <img src="<?php echo esc_url($custom_media_url); ?>" alt="<?php echo esc_attr($aria_label); ?>">
                         <?php endif; ?>
                     <?php else : ?>
-                        <img src="<?php echo esc_url($custom_media_url); ?>" alt="<?php echo $aria_label; ?>">
+                        <img src="<?php echo esc_url($custom_media_url); ?>" alt="<?php echo esc_attr($aria_label); ?>">
                     <?php endif; ?>
                 <?php elseif ($arrow_type === 'custom' && $arrow_url) : ?>
-                    <img src="<?php echo esc_url($arrow_url); ?>" alt="<?php echo $aria_label; ?>">
+                    <img src="<?php echo esc_url($arrow_url); ?>" alt="<?php echo esc_attr($aria_label); ?>">
                 <?php else : ?>
                     <span class="eb-swiper-arrow-svg">
                         <?php echo $this->get_arrow_svg($arrow_type, $arrow_direction); ?>
@@ -597,8 +573,3 @@ class EB_Swiper_Arrow extends Widget_Base {
         }
     }
 }
-
-// Register the widget
-//add_action( 'elementor/widgets/register', function( $widgets_manager ) {
-//    $widgets_manager->register( new \Element_Bits\Widgets\EB_Swiper_Arrow() );
-//} );

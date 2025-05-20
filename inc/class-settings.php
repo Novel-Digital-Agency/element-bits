@@ -105,6 +105,8 @@ class Elebits_Settings {
 		// Add sections here if needed
 	}
 
+
+
 	/**
 	 * Sanitize active modules.
 	 *
@@ -172,6 +174,8 @@ class Elebits_Settings {
 		?>
 		<form action="options.php" method="post">
 			<?php
+			// settings_fields() adds nonce field and other necessary hidden fields
+			// This automatically adds the nonce field with name '_wpnonce'
 			settings_fields( 'element_bits_settings' );
 			do_settings_sections( 'element_bits_settings' );
 			submit_button( __( 'Save Settings', 'element-bits' ) );
@@ -193,7 +197,11 @@ class Elebits_Settings {
 			<p><?php esc_html_e( 'Enable or disable Element Bits widgets using the checkboxes below.', 'element-bits' ); ?></p>
 			
 			<form method="post" action="options.php" class="elebits-modules-form">
-				<?php settings_fields( 'element_bits_settings' ); ?>
+				<?php 
+				// settings_fields() adds nonce field and other necessary hidden fields
+				// WordPress automatically verifies this nonce during options.php processing
+				settings_fields( 'element_bits_settings' ); 
+				?>
 				
 				<div class="elebits-modules-grid">
 					<?php foreach ( $modules as $module_name => $module ) : ?>

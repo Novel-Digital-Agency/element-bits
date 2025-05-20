@@ -8,10 +8,11 @@
  * Author URI: https://noveldigital.pro
  * Text Domain: element-bits
  * Domain Path: /languages
- * Requires at least: 5.6
+ * Requires at least: 6.5
  * Requires PHP: 7.4
- * Elementor tested up to: 3.20.0
- * Elementor Pro tested up to: 3.20.0
+ * Tested up to: 6.8
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * @package Element_Bits
  */
@@ -44,6 +45,13 @@ final class Element_Bits {
      * @var Element_Bits
      */
     private static $instance = null;
+
+    /**
+     * Instance of the settings class.
+     *
+     * @var Elebits_Settings
+     */
+    public $settings;
 
     /**
      * Get the singleton instance of this class.
@@ -213,11 +221,14 @@ final class Element_Bits {
             );
         }
 
+        // @TODO, add to wp settings a flag to enable Alpine.js
+        $alpine_flag = false;
+
         // Register Alpine.js if needed
-        if ( 1==1 ) {
+        if ( $alpine_flag ) {
             wp_register_script(
                 'alpinejs',
-                'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
+                ELEBITS_URL . 'vendor/alpine.min.js',
                 [],
                 wp_rand(),
                 [
@@ -285,20 +296,6 @@ final class Element_Bits {
             require_once $module['widget_file_path'];
             $widgets_manager->register( new $module['class_name']() );
         }
-    }
-
-    /**
-     * Instance of the settings class.
-     *
-     * @var Elebits_Settings
-     */
-    public $settings;
-
-    /**
-     * Run the plugin.
-     */
-    public function run() {
-        // Main plugin functionality will be executed here
     }
 
     /**

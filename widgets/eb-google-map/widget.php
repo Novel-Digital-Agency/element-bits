@@ -226,7 +226,7 @@ class EB_Google_Map extends Widget_Base {
         $styles = require_once ELEBITS_PATH . 'widgets/eb-google-map/map-styles.php';
 
         if ( empty( $settings['lat_lng'] ) || strpos( $settings['lat_lng'], ',' ) === false ) {
-            echo 'Please enter Latitude / Longtidute seperated by coma (34.847528, 32.435806)';
+            echo esc_html__( 'Please enter Latitude / Longtidute seperated by coma (34.847528, 32.435806)', 'element-bits' );
             return;
         }
 
@@ -248,7 +248,7 @@ class EB_Google_Map extends Widget_Base {
             [
                 'id' => 'eb-widget-wrapper-' . $this->get_id(),
                 'class' => [ 'eb-widget-wrapper' ],
-                'data-elebits' => json_encode( $w_data ),
+                'data-elebits' => esc_attr( wp_json_encode( $w_data ) ),
                 'data-eb-map-style' => $settings['style'] != '0' ? esc_attr( $styles[$settings['style']] ) : false,
             ]
         );
@@ -262,8 +262,8 @@ class EB_Google_Map extends Widget_Base {
             ]
         );
         ?>
-        <div <?php echo $this->get_render_attribute_string( 'eb-wrapper' ); ?> >
-            <div <?php echo $this->get_render_attribute_string( 'map' ); ?> ></div>
+        <div <?php echo wp_kses_post( $this->get_render_attribute_string( 'eb-wrapper' ) ); ?> >
+            <div <?php echo wp_kses_post( $this->get_render_attribute_string( 'map' ) ); ?> ></div>
         </div>
         <?php
     }
